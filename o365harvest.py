@@ -8,7 +8,7 @@ from time import sleep
 from string import Template
 
 
-def Spray(domain, users, target_url, output_file, wait, verbose, more_verbose):
+def Spray(domain, users, target_url, output_file, wait, verbose, more_verbose, debug):
 
 	i = 0
 	results = []
@@ -25,6 +25,8 @@ def Spray(domain, users, target_url, output_file, wait, verbose, more_verbose):
 		r = requests.post(target_url, data=body)
 		
 		#print(target_url)
+		if debug:
+			print("Time elapsed: " + str(r.elapsed) + "\n")
 
 		if more_verbose:
 			print("Status: " + str(r.status_code))
@@ -60,6 +62,7 @@ def main():
 
 	parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', default=False)
 	parser.add_argument('-vv', '--more-verbose', action='store_true', dest='more_verbose', default=False)
+	parser.add_argument('-D', '--debug', action='store_true', dest='debug', default=False)
 
 	parser.add_argument('-o', '--output', type=argparse.FileType('w'), dest='output_file', default='spray_results.txt', help='Output file for results (txt). Default is spray_results.txt')
 
@@ -81,13 +84,15 @@ def main():
 		target_url = args.url + 'common/GetCredentialType'
 
 	
+	if args.debug:
+		print("*** DEBUG MESSAGING ENABLED ***")
 	users = []
 
 	for line in args.user_list:
 		users.append(line.split('@')[0].strip())
 		
 
-	results = Spray(args.domain, users, target_url, args.output_file, args.wait, args.verbose, args.more_verbose)	
+	results = Spray(args.domain, users, target_url, args.output_file, args.wait, args.verbose, args.more_verbose, args.debug)	
 
 
 if __name__ == '__main__':
