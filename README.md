@@ -1,7 +1,9 @@
 # o365harvest
-An update of [o365creeper](https://github.com/LMGsec/o365creeper) using [Python 3](https://python.org) and adding [fireprox](https://github.com/ustayready/fireprox) compatibility.
+A tool for enumerating the email accounts of Office365 users. This is an update of [o365creeper](https://github.com/LMGsec/o365creeper) using [Python 3](https://python.org) and adding [fireprox](https://github.com/ustayready/fireprox) compatibility.
 
 
+
+## Usage
 	jmpalk@kali-e:~/o365harvest$ ./o365harvest.py -h
 	usage: o365harvest.py [-h] [-d DOMAIN] [-l USER_LIST] [-u URL] [-w WAIT] [-v] [-vv] [-D] [-o OUTPUT_FILE]
 
