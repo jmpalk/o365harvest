@@ -1,5 +1,5 @@
 # o365harvest
-A tool for enumerating the email accounts of Office365 users. This is an update of [o365creeper](https://github.com/LMGsec/o365creeper) using [Python 3](https://python.org) and adding [fireprox](https://github.com/ustayready/fireprox) compatibility.
+A tool for enumerating the email accounts of Office365 users. This is an update of [o365creeper](https://github.com/LMGsec/o365creeper) using [Python 3](https://python.org) and adding [fireprox](https://github.com/ustayready/fireprox) compatibility. As noted in the description for o365creeper, repeated attempts to validate email addresses coming from a single host may draw Microsoft's attention, at which point they may start injecting false positives into the responses. Using fireprox to direct requests through an AWS API Gateway and rotate IP addresses, can avoid this.
 
 
 
