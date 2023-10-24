@@ -6,10 +6,22 @@ import argparse
 import uuid
 from time import sleep
 from string import Template
+import random
+#import logging
+#from http.client import HTTPConnection
 
+def GetRandomAgent(agents):
+        return random.choice(agents)
 
-def Spray(domain, users, target_url, output_file, wait, verbose, more_verbose, debug):
+def Spray(domain, users, agents, target_url, output_file, wait, verbose, more_verbose, debug):
 
+	#HTTPConnection.debuglevel = 1
+	#logging.basicConfig()
+	#logging.getLogger().setLevel(logging.DEBUG)
+	#requests_log = logging.getLogger("urllib3")
+	#requests_log.setLevel(logging.DEBUG)
+	#requests_log.propagate = True
+	
 	i = 0
 	results = []
 
@@ -22,7 +34,10 @@ def Spray(domain, users, target_url, output_file, wait, verbose, more_verbose, d
 			print("\ntesting " + user)
 
 		body = '{"Username": "%s@%s"}' % (user, domain)
-		r = requests.post(target_url, data=body)
+		agent_header = GetRandomAgent(agents)
+		headers = {'user-agent': agent_header}
+		
+		r = requests.post(target_url, headers=headers, data=body)
 		
 		#print(target_url)
 		if debug:
@@ -55,6 +70,7 @@ def main():
 	parser = argparse.ArgumentParser(description="Enumerate users against Office365")
 
 	target_group = parser.add_argument_group(title="Attack Target")
+	target_group.add_argument('-a', dest='agent_list', type=argparse.FileType('r'), help='User agent file')
 	target_group.add_argument('-d', dest='domain', type=str, help='Target domain - required')
 	target_group.add_argument('-l', dest='user_list', type=argparse.FileType('r'), help='File with list of target usernames (without domain)')
 	target_group.add_argument('-u', '--url', type=str, dest='url', help='Target URL if using something like fireprox; otherwise will directly call the O365 login endpoint')
@@ -83,16 +99,22 @@ def main():
 	else:
 		target_url = args.url + 'common/GetCredentialType'
 
-	
+	if not args.agent_list:
+                agent_list = 'useragents.txt'
+                
 	if args.debug:
 		print("*** DEBUG MESSAGING ENABLED ***")
+		
 	users = []
-
+	agents = []
+        
 	for line in args.user_list:
 		users.append(line.split('@')[0].strip())
-		
 
-	results = Spray(args.domain, users, target_url, args.output_file, args.wait, args.verbose, args.more_verbose, args.debug)	
+	for line in args.agent_list:
+                agents.append(line.strip())
+
+	results = Spray(args.domain, users, agents, target_url, args.output_file, args.wait, args.verbose, args.more_verbose, args.debug)	
 
 
 if __name__ == '__main__':
